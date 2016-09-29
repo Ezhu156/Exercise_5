@@ -1,25 +1,28 @@
-var x; // mouseX
-var y; // mouseY
-var n; //x value for monster 1
-var c; //y value for monster 1
-var a; //red value for monster 2
-var b; // green value for monster 2
-var d; // blue value for monster 2
+var x;
+var y;
+var n; //x value for arrow key controls
+var c; //y value for arrow key controls
+var r; //red value
+var g; // green value
+var b; // blue value
 
 function setup() {
-  createCanvas(600, 700);
+  createCanvas(1200, 800);
   background(80, 40, 70); //yahya
 }
 
 function draw() {
-  x = mouseX //affects color of eyes and location of monster 2
-  y = mouseY // affects color of eyes and location of monster 2
-  
-//mouse must be pressed once for monster to appear on the screen
-  if (mouseIsPressed) { //if mouse is pressed, monster 1 will return to original location
-    n = 400
-    c = 400
-    monster1();
+  scale(.7, .7);
+
+  //keyboard monster 1= monster1 moves with arrow keys
+  //keyboard monster 2= monster2 moves with arrow keys
+  //mouse monster1= monster1 moves with mouse
+  //mouse monster2= monster2 moves with mouse
+
+  //mouse must be pressed once for monsters controlled by keyboard to appear on the screen
+  if (mouseIsPressed) { //if mouse is pressed, keyboard monster 1+2 will return to original location
+    n = 1000 //starting x location of keyboard monster 1+2
+    c = 600 // starting y location of keyboard monster 1+2
   } else //allows you to move monster with the arrow keys
     background(80, 40, 70);
 
@@ -31,138 +34,131 @@ function draw() {
     c -= 5;
   if (keyIsDown(DOWN_ARROW))
     c += 5;
-  monster1();
 
-  if (keyIsPressed) { //if space bar is pressed (and held), you can control the position of monster 2 with the mouse
-    if (keyCode == 32) {
-      background(80, 40, 70)
-      monster2(mouseX, mouseY);
-      a = 139 //red value for monster 2
-      b = 14 //green value for monster 2
-      d = 200 //blue value for monster 2
-    }
-  }
-  if (keyIsPressed){ //if c is pressed, monster 2 will now be a blue color and can be controlled with the mouse
-      if (keyCode == 99){
-        background(80, 40, 70)
-        monster2();
-        a = 70; //red value for monster 2
-        b = 150; //green value for monster 2
-        d = 209; //blue value for monster 2
-      }
-  }
+  // keyboard monster1 moves with arrow keys
+  r = 215;
+  g = 193;
+  b = 255;
+  monster1(n, c, r, g, b); //keyboard monster1
+
+  // mouse monster1 starts under mouse monster 2 and the farther the mouse goes to the right, the farther away
+  // mouse monster 1 gets from mouse monster 2
+  r = 203;
+  g = 251;
+  b = 255;
+  monster1(200 + 2 * mouseX, 200 + mouseY, r, g, b); //mouse monster1
+
+  // mouse monster2 moves with the mouse
+  r = 70 //red value for monster 2
+  g = 150 //green value for monster 2
+  b = 200 //blue value for monster 2
+  monster2(200 + mouseX, mouseY, r, g, b); //mouse monster2
+
+  // keyboard monster2 moves in the opposited direction of keyboard monster1
+  r = 139; //red value for keyboard monster 2
+  g = 14; //green value for keyboard monster 2
+  b = 200; //blue value for keyboard monster 2
+  monster2(-n + 1500, c, r, g, b); //keyboard monster2
+
+}
+//morphed monster
+function monster1(x, y, r, g, b) {
+  legs(x, y, r, g, b);
+  horns(x, y, r, g, b);
+  arms(x, y, r, g, b);
+  body(x, y, r, g, b);
+  eyes(x, y, r, g, b);
+  mouth(x, y, r, g, b);
 }
 
-
-function monster1() {
-  legs();
-  horns();
-  arms();
-  body();
-  eyes();
-  mouth();
-}
-
-function eyes() {
-  fill(x, 0, y);
+function eyes(x, y, r, g, b) {
+  fill(g, b, r);
+  strokeWeight(4);
   stroke(0); //yahya
-  strokeWeight(4); //yahya
-  ellipseMode(CENTER); //yahya
-  ellipse(n, c - 70, 32, 30); //yahya
-  ellipse(n + 70, c - 65, 32, 30); //yahya
-  ellipse(n - 70, c - 63, 32, 30); //yahya
+  ellipse(x, y - 70, 32, 30); //yahya
+  ellipse(x + 70, y - 65, 32, 30); //yahya
+  ellipse(x - 70, y - 63, 32, 30); //yahya
 
   //eyebrows
 
-  line(n - 20, c - 100, n + 20, c - 100); //yahya
-  line(n - 90, c - 100, n - 60, c - 90); //yahya
-  line(n + 90, c - 100, n + 60, c - 90); //yahya
+  line(x - 20, y - 100, x + 20, y - 100); //yahya
+  line(x - 90, y - 100, x - 60, y - 90); //yahya
+  line(x + 90, y - 100, x + 60, y - 90); //yahya
 }
 
-function mouth() {
+function mouth(x, y, r, g, b) {
   //mouth
+  stroke(0);
+  strokeWeight(4);
   fill(0, 50, 0); //yahya
-  triangle(n - 100, c + 50, n, c + 100, n + 100, c + 50); //yahya
+  triangle(x - 100, y + 50, x, y + 100, x + 100, y + 50); //yahya
 
   //teeth
   noStroke();
   fill(255);
-  triangle(n - 53, c + 50, n - 43, c + 65, n - 33, c + 50);
-  triangle(n - 23, c + 50, n - 13, c + 65, n - 3, c + 50);
-  triangle(n + 7, c + 50, n + 17, c + 65, n + 27, c + 50);
-  triangle(n + 37, c + 50, n + 47, c + 65, n + 57, c + 50);
+  triangle(x - 53, y + 51, x - 43, y + 66, x - 33, y + 51);
+  triangle(x - 23, y + 51, x - 13, y + 66, x - 3, y + 51);
+  triangle(x + 7, y + 51, x + 17, y + 66, x + 27, y + 51);
+  triangle(x + 37, y + 51, x + 47, y + 66, x + 57, y + 51);
 }
 
-function body() {
+function body(x, y, r, g, b) {
   // Body
   noStroke();
-  fill(215, 193, 255);
-  ellipse(n, c, 360, 360);
+  fill(r, g, b);
+  ellipse(x, y, 360, 360);
 }
 
-function legs() {
+function legs(x, y, r, g, b) {
   //legs
 
   strokeWeight(20); //yahya
   stroke(30, 0, 40); //yahya
-  line(n - 100, c + 160, n - 130, c + 250); //yahya
-  line(n - 60, c + 160, n - 70, c + 250); //yahya
-  line(n + 100, c + 160, n + 130, c + 250); //yahya
-  line(n + 60, c + 160, n + 70, c + 250); //yahya
+  line(x - 100, y + 160, x - 130, y + 250); //yahya
+  line(x - 60, y + 160, x - 70, y + 250); //yahya
+  line(x + 100, y + 160, x + 130, y + 250); //yahya
+  line(x + 60, y + 160, x + 70, y + 250); //yahya
 
   // feet
   strokeWeight(8); //yahya
   fill(139, 14, 200); //yahya
   stroke(10, 0, 80); //yahya
-  ellipse(n - 70, c + 260, 38, 25); //yahya
-  ellipse(n - 130, c + 260, 38, 25); //yahya
-  ellipse(n + 130, c + 260, 38, 25); //yahya
-  ellipse(n + 70, c + 260, 38, 25); //yahya
+  ellipse(x - 70, y + 260, 38, 25); //yahya
+  ellipse(x - 130, y + 260, 38, 25); //yahya
+  ellipse(x + 130, y + 260, 38, 25); //yahya
+  ellipse(x + 70, y + 260, 38, 25); //yahya
 }
 
-function horns() {
-  //top horn
+function horns(x, y, r, g, b) {
+  //top horn, left horn, right horn
   noStroke();
   fill(255, 246, 215);
-  triangle(n - 8, c - 180, n + 2, c - 230, n + 12, c - 180);
-
-  //left horn
-  noStroke();
-  fill(255, 246, 215);
-  triangle(n - 48, c - 150, n - 42, c - 210, n - 28, c - 160);
-
-  //right horn
-  noStroke();
-  fill(255, 246, 215);
-  triangle(n + 32, c - 160, n + 47, c - 210, n + 52, c - 150);
+  triangle(x - 8, y - 180, x + 2, y - 230, x + 12, y - 180);
+  triangle(x - 48, y - 150, x - 42, y - 210, x - 28, y - 160);
+  triangle(x + 32, y - 160, x + 47, y - 210, x + 52, y - 150);
 }
 
-function arms() {
-  //left arm
+function arms(x, y, r, g, b) {
+  //left arm, right arm
   stroke(255, 151, 148);
   strokeWeight(20);
   noFill();
-  arc(n + 130, c + 70, 67, 200, 0, PI / 2, OPEN);
-
-  //right arm
-  stroke(255, 151, 148);
-  strokeWeight(20);
-  noFill();
-  arc(n - 130, c + 70, 67, 200, PI / 2, PI, OPEN);
+  arc(x + 130, y + 70, 67, 200, 0, PI / 2, OPEN);
+  arc(x - 130, y + 70, 67, 200, PI / 2, PI, OPEN);
 }
 
-function monster2() {
+function monster2(x, y, r, g, b) {
 
   //body
   //fill(139, 14, 200);
-  fill(a, b, d); //yahya
+  fill(r, g, b); //yahya
   strokeWeight(10); //yahya
   stroke(10, 0, 80); //yahya
   rectMode(CENTER); //yahya
   rect(x, y, 330, 300); //yahya
 
   //eyes
-  
+
   fill(233, 0, 0); //yahya
   stroke(0); //yahya
   strokeWeight(4); //yahya
@@ -193,13 +189,13 @@ function monster2() {
   strokeWeight(20); //yahya
   stroke(30, 0, 40); //yahya
   line(x - 100, y + 160, x - 130, y + 250); //yahya
-  line(x - 60, y + 160, x - 70, y + 250);//yahya
-  line(x + 100, y + 160, x + 130, y + 250);//yahya
-  line(x + 60, y + 160, x + 70, y + 250);//yahya
+  line(x - 60, y + 160, x - 70, y + 250); //yahya
+  line(x + 100, y + 160, x + 130, y + 250); //yahya
+  line(x + 60, y + 160, x + 70, y + 250); //yahya
 
   //feet
 
-  strokeWeight(8);//yahya
+  strokeWeight(8); //yahya
   fill(139, 14, 200); //yahya
   stroke(10, 0, 80); //yahya
   ellipse(x - 70, y + 260, 38, 25); //yahya
